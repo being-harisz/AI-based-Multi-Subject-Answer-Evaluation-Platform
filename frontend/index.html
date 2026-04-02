@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Automated Answer Sheet Evaluation System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue-50:#eff6ff;--blue-100:#dbeafe;--blue-200:#bfdbfe;
+  --blue-400:#60a5fa;--blue-500:#3b82f6;--blue-600:#2563eb;
+  --blue-700:#1d4ed8;--blue-800:#1e40af;
+  --green-100:#dcfce7;--green-500:#22c55e;--green-600:#16a34a;--green-700:#15803d;
+  --amber-100:#fef3c7;--amber-500:#f59e0b;--amber-600:#d97706;
+  --red-100:#fee2e2;--red-500:#ef4444;--red-600:#dc2626;
+  --violet-100:#ede9fe;--violet-500:#8b5cf6;--violet-600:#7c3aed;
+  --teal-100:#ccfbf1;--teal-500:#14b8a6;--teal-600:#0d9488;
+  --slate-50:#f8fafc;--slate-100:#f1f5f9;--slate-200:#e2e8f0;
+  --slate-300:#cbd5e1;--slate-400:#94a3b8;--slate-500:#64748b;
+  --slate-600:#475569;--slate-700:#334155;--slate-800:#1e293b;
+  --r-sm:6px;--r-md:10px;--r-lg:14px;--r-xl:20px;
+  --sh-sm:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --sh-md:0 4px 12px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.04);
+  --sh-lg:0 10px 30px rgba(0,0,0,.1),0 4px 8px rgba(0,0,0,.05);
+  --sh-xl:0 20px 50px rgba(0,0,0,.12),0 8px 16px rgba(0,0,0,.06);
+  --tr:220ms cubic-bezier(.4,0,.2,1);
+  --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
+}
+body{font-family:var(--font);background:linear-gradient(135deg,#e8f0fe 0%,#f0f4ff 40%,#e8effc 100%);min-height:100vh;color:var(--slate-800);line-height:1.6}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:var(--slate-300);border-radius:3px}
+.wrap{max-width:1280px;margin:0 auto;padding:24px 18px 56px}
+
+/* Header */
+.header{background:linear-gradient(135deg,var(--blue-700),var(--blue-500));
+  border-radius:var(--r-xl);padding:26px 32px;margin-bottom:22px;
+  box-shadow:var(--sh-xl),0 0 0 1px rgba(255,255,255,.12) inset;
+  display:flex;align-items:center;gap:18px;position:relative;overflow:hidden}
+.header::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 80% 50%,rgba(255,255,255,.12),transparent 60%);pointer-events:none}
+.header-icon{width:50px;height:50px;background:rgba(255,255,255,.18);
+  border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;
+  font-size:24px;flex-shrink:0;border:1px solid rgba(255,255,255,.25)}
+.header-text h1{font-size:1.4rem;font-weight:700;color:#fff;letter-spacing:-.015em}
+.header-text p{font-size:.82rem;color:rgba(255,255,255,.72);margin-top:2px}
+
+/* Global progress */
+.gprogress{background:#fff;border-radius:var(--r-lg);padding:14px 20px;
+  margin-bottom:22px;box-shadow:var(--sh-sm);border:1px solid var(--slate-200);
+  display:flex;align-items:center;gap:12px}
+.gp-label{font-size:.75rem;font-weight:700;color:var(--slate-500);
+  white-space:nowrap;text-transform:uppercase;letter-spacing:.05em}
+.gp-outer{flex:1;height:8px;background:var(--slate-100);border-radius:99px;overflow:hidden}
+.gp-inner{height:100%;background:linear-gradient(90deg,var(--blue-500),var(--blue-400));
+  border-radius:99px;width:0%;transition:width 600ms cubic-bezier(.4,0,.2,1)}
+.gp-pct{font-size:.82rem;font-weight:700;color:var(--blue-600);
+  min-width:38px;text-align:right;font-family:var(--mono)}
+
+/* ── SUBJECT / MEDIUM SELECTOR ─────────────────────────────────────────────── */
+.subject-bar{background:#fff;border-radius:var(--r-lg);padding:16px 20px;
+  margin-bottom:22px;box-shadow:var(--sh-sm);border:1px solid var(--slate-200)}
+.subject-bar-title{font-size:.72rem;font-weight:700;color:var(--slate-500);
+  text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;
+  display:flex;align-items:center;gap:6px}
+.subject-row{display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.subject-group{display:flex;flex-direction:column;gap:4px}
+.subject-group label{font-size:.74rem;font-weight:600;color:var(--slate-600);
+  text-transform:uppercase;letter-spacing:.04em}
+.subject-pills{display:flex;flex-wrap:wrap;gap:6px}
+.pill{padding:7px 14px;border-radius:99px;border:1.5px solid var(--slate-200);
+  font-size:.82rem;font-weight:600;cursor:pointer;transition:all var(--tr);
+  background:#fff;color:var(--slate-600);font-family:var(--font)}
+.pill:hover{border-color:var(--blue-400);color:var(--blue-600);background:var(--blue-50)}
+.pill.pill-selected{background:linear-gradient(135deg,var(--blue-600),var(--blue-500));
+  color:#fff;border-color:transparent;box-shadow:0 3px 10px rgba(59,130,246,.35)}
+.pill.pill-lang{border-color:var(--teal-500)}
+.pill.pill-lang.pill-selected{background:linear-gradient(135deg,var(--teal-600),var(--teal-500));
+  box-shadow:0 3px 10px rgba(20,184,166,.35)}
+.medium-row{display:flex;align-items:center;gap:10px;
+  padding:10px 14px;border-radius:var(--r-md);
+  background:var(--amber-100);border:1px solid rgba(245,158,11,.3);
+  font-size:.82rem;color:var(--amber-600);font-weight:500}
+.medium-row.hidden{display:none}
+.medium-row select{border:1.5px solid rgba(245,158,11,.5);border-radius:var(--r-sm);
+  padding:4px 8px;font-size:.82rem;font-family:var(--font);
+  background:#fff;color:var(--slate-700);cursor:pointer;outline:none}
+.subject-hint{margin-top:8px;font-size:.76rem;color:var(--slate-400);
+  font-style:italic;display:flex;align-items:center;gap:5px}
+.subject-hint.hint-lang{color:var(--teal-600)}
+.subject-hint.hint-medium{color:var(--amber-600)}
+
+/* ── MODE TOGGLE ───────────────────────────────────────────────────────────── */
+.mode-toggle{background:#fff;border-radius:var(--r-lg);padding:6px;
+  margin-bottom:22px;box-shadow:var(--sh-sm);border:1px solid var(--slate-200);
+  display:flex;gap:4px}
+.mode-btn{flex:1;padding:10px 14px;border:none;border-radius:var(--r-md);
+  font-family:var(--font);font-size:.86rem;font-weight:600;cursor:pointer;
+  transition:all var(--tr);display:flex;align-items:center;justify-content:center;gap:7px;
+  background:transparent;color:var(--slate-500)}
+.mode-btn.active{background:linear-gradient(135deg,var(--blue-600),var(--blue-500));
+  color:#fff;box-shadow:0 3px 10px rgba(59,130,246,.35)}
+.mode-btn:not(.active):hover{background:var(--slate-50);color:var(--slate-700)}
+.mode-badge{font-size:.65rem;font-weight:700;padding:2px 6px;border-radius:99px;
+  text-transform:uppercase;letter-spacing:.04em}
+.mode-btn.active .mode-badge{background:rgba(255,255,255,.25);color:#fff}
+.mode-btn:not(.active) .mode-badge{background:var(--violet-100);color:var(--violet-600)}
+
+/* Grids */
+.top-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.bot-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px}
+@media(max-width:860px){.top-grid,.bot-grid{grid-template-columns:1fr}}
+
+/* Card */
+.card{background:#fff;border-radius:var(--r-lg);box-shadow:var(--sh-md);
+  border:1px solid rgba(226,232,240,.8);overflow:hidden;transition:box-shadow var(--tr)}
+.card:hover{box-shadow:var(--sh-lg)}
+.card-hd{padding:16px 20px 12px;border-bottom:1px solid var(--slate-100);
+  display:flex;align-items:center;justify-content:space-between}
+.card-hd-left{display:flex;align-items:center;gap:10px}
+.hd-icon{width:30px;height:30px;border-radius:var(--r-sm);
+  display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.card-hd h2{font-size:.92rem;font-weight:700;color:var(--slate-800)}
+.card-bd{padding:18px 20px}
+
+/* ── SEPARATE MODE: two upload zones side by side ──────────────────────────── */
+.sep-uploads{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+@media(max-width:600px){.sep-uploads{grid-template-columns:1fr}}
+.sep-slot-label{font-size:.74rem;font-weight:700;color:var(--slate-600);
+  text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;
+  display:flex;align-items:center;gap:5px}
+.slot-icon-qp{color:var(--blue-600)}
+.slot-icon-as{color:var(--violet-600)}
+
+/* Upload drop zone */
+.drop{border:2px dashed var(--blue-200);border-radius:var(--r-md);
+  padding:28px 12px;text-align:center;cursor:pointer;
+  background:var(--blue-50);margin-bottom:8px;position:relative;
+  transition:all var(--tr)}
+.drop:hover,.drop.drag{border-color:var(--blue-500);background:var(--blue-100);transform:scale(1.01)}
+.drop.drop-violet{border-color:rgba(139,92,246,.3);background:#faf5ff}
+.drop.drop-violet:hover,.drop.drop-violet.drag{border-color:var(--violet-500);background:var(--violet-100)}
+.drop input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.drop-icon{font-size:28px;display:block;margin-bottom:6px;opacity:.5}
+.drop-label{font-size:.8rem;color:var(--slate-500)}
+.file-badge{margin-top:6px;background:var(--blue-100);color:var(--blue-700);
+  font-size:.72rem;font-weight:600;padding:3px 9px;border-radius:99px;
+  display:inline-block;font-family:var(--mono);white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.file-badge.badge-violet{background:var(--violet-100);color:var(--violet-600)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:10px 16px;border-radius:var(--r-md);font-family:var(--font);
+  font-size:.86rem;font-weight:600;cursor:pointer;border:none;transition:all var(--tr)}
+.btn-choose{background:#fff;color:var(--blue-600);border:1.5px solid var(--blue-300);
+  width:100%;margin-bottom:8px}
+.btn-choose:hover{background:var(--blue-50);border-color:var(--blue-500);
+  transform:translateY(-1px);box-shadow:0 4px 10px rgba(59,130,246,.15)}
+.btn-eval{background:linear-gradient(135deg,var(--blue-600),var(--blue-500));
+  color:#fff;width:100%;padding:12px;font-size:.9rem;
+  box-shadow:0 4px 14px rgba(59,130,246,.35)}
+.btn-eval:hover:not(:disabled){transform:translateY(-2px);
+  box-shadow:0 8px 20px rgba(59,130,246,.45);filter:brightness(1.05)}
+.btn-eval:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-demo{background:var(--slate-100);color:var(--slate-600);
+  border:1.5px solid var(--slate-200);width:100%;margin-top:8px;font-size:.82rem}
+.btn-demo:hover{background:var(--slate-50);transform:translateY(-1px)}
+.btn-dl{background:#fff;color:var(--slate-700);border:1.5px solid var(--slate-200);
+  font-size:.78rem;padding:7px 12px}
+.btn-dl:hover{background:var(--slate-50);transform:translateY(-1px)}
+
+/* Info bar for separate mode */
+.sep-info{background:var(--violet-100);border:1px solid rgba(139,92,246,.25);
+  border-radius:var(--r-md);padding:9px 13px;margin-bottom:12px;
+  font-size:.78rem;color:var(--violet-600);font-weight:500;
+  display:flex;align-items:flex-start;gap:6px}
+
+/* Steps */
+.step-list{display:flex;flex-direction:column;gap:10px}
+.step{display:flex;align-items:center;gap:12px;padding:11px 14px;
+  border-radius:var(--r-md);border:1.5px solid var(--slate-200);
+  background:var(--slate-50);transition:all var(--tr)}
+.step.active{border-color:var(--amber-500);background:var(--amber-100);
+  box-shadow:0 0 0 3px rgba(245,158,11,.07)}
+.step.done{border-color:var(--green-500);background:var(--green-100)}
+.step.err{border-color:var(--red-500);background:var(--red-100)}
+.step-num{width:26px;height:26px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.74rem;font-weight:700;flex-shrink:0;
+  background:var(--slate-200);color:var(--slate-500);transition:all var(--tr)}
+.step.active .step-num{background:var(--amber-500);color:#fff}
+.step.done  .step-num{background:var(--green-500);color:#fff}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{width:26px;height:26px;border:3px solid rgba(245,158,11,.25);
+  border-top-color:var(--amber-500);border-radius:50%;
+  animation:spin .8s linear infinite;flex-shrink:0}
+.step-title{flex:1;font-size:.85rem;font-weight:600;color:var(--slate-700)}
+.step.active .step-title{color:var(--amber-600)}
+.step.done   .step-title{color:var(--green-700)}
+.step-badge{font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:99px;
+  letter-spacing:.03em;text-transform:uppercase;flex-shrink:0}
+.b-wait{background:var(--slate-200);color:var(--slate-500)}
+.b-act {background:var(--amber-500);color:#fff}
+.b-done{background:var(--green-500);color:#fff}
+.b-err {background:var(--red-500);  color:#fff}
+
+/* QA blocks */
+.qa-block{margin-bottom:14px;border:1px solid var(--slate-200);
+  border-radius:var(--r-md);overflow:hidden}
+.qa-block:last-child{margin-bottom:0}
+.qa-q{padding:9px 13px 5px;background:var(--slate-50);border-bottom:1px solid var(--slate-100)}
+.qa-qlabel{display:inline-block;font-size:.74rem;font-weight:700;color:var(--blue-600);
+  background:var(--blue-100);padding:2px 7px;border-radius:99px;
+  margin-bottom:4px;font-family:var(--mono)}
+.qa-qtext{font-size:.85rem;font-weight:500;color:var(--slate-700)}
+.qa-a-wrap{padding:9px 13px}
+.qa-alabel{font-size:.72rem;font-weight:700;color:var(--amber-600);
+  text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.qa-atext{font-size:.83rem;color:var(--slate-600);line-height:1.6;
+  max-height:68px;overflow:hidden;transition:max-height 400ms ease;position:relative}
+.qa-atext.exp{max-height:1000px}
+.qa-atext:not(.exp)::after{content:'';position:absolute;bottom:0;left:0;right:0;
+  height:26px;background:linear-gradient(transparent,#fff)}
+.view-btn{margin-top:5px;font-size:.75rem;font-weight:600;color:var(--blue-500);
+  cursor:pointer;background:none;border:none;padding:0;font-family:var(--font);
+  transition:color var(--tr)}
+.view-btn:hover{color:var(--blue-700)}
+
+/* Result cards */
+.rc{border:1.5px solid var(--slate-200);border-radius:var(--r-md);
+  margin-bottom:12px;overflow:hidden;transition:all var(--tr)}
+.rc:last-child{margin-bottom:0}
+.rc:hover{box-shadow:0 4px 12px rgba(0,0,0,.07)}
+.rc-hd{padding:10px 15px;display:flex;align-items:center;justify-content:space-between;
+  background:var(--slate-50);border-bottom:1px solid var(--slate-100);gap:8px}
+.rc-ql{font-size:.86rem;font-weight:700;color:var(--slate-700)}
+.rc-hr{display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.score-chip{font-family:var(--mono);font-size:.85rem;font-weight:600;
+  background:var(--blue-600);color:#fff;padding:3px 10px;border-radius:99px;white-space:nowrap}
+.st-chip{font-size:.68rem;font-weight:700;padding:3px 8px;
+  border-radius:99px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+.st-ev{background:var(--green-100);color:var(--green-700)}
+.st-sk{background:var(--amber-100);color:var(--amber-600)}
+.st-na{background:var(--slate-200);color:var(--slate-600)}
+.st-er{background:var(--red-100);color:var(--red-600)}
+.rc-bd{padding:13px 15px}
+.conf-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.conf-lbl{font-size:.74rem;color:var(--slate-500);font-weight:500;
+  white-space:nowrap;min-width:115px}
+.cb-out{flex:1;height:5px;background:var(--slate-100);border-radius:99px;overflow:hidden}
+.cb-in{height:100%;border-radius:99px;transition:width 800ms cubic-bezier(.4,0,.2,1) .2s}
+.cb-hi{background:linear-gradient(90deg,var(--green-500),#4ade80)}
+.cb-md{background:linear-gradient(90deg,var(--amber-500),#fbbf24)}
+.cb-lo{background:linear-gradient(90deg,var(--red-500),#f87171)}
+.conf-val{font-size:.75rem;font-weight:700;min-width:36px;text-align:right;
+  font-family:var(--mono);color:var(--slate-600)}
+.fb-row{font-size:.81rem;color:var(--slate-600);margin-bottom:10px;line-height:1.5}
+.fb-row strong{color:var(--slate-700);font-weight:600}
+.divider{height:1px;background:var(--slate-100);margin:10px 0}
+.kw-title{font-size:.7rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.05em;color:var(--slate-500);margin-bottom:6px}
+.kw-list{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.kw-tag{font-size:.73rem;font-weight:500;padding:2px 8px;border-radius:99px;
+  display:flex;align-items:center;gap:3px;font-family:var(--mono)}
+.kw-m{background:var(--green-100);color:var(--green-700);border:1px solid rgba(34,197,94,.2)}
+.kw-x{background:var(--red-100);color:var(--red-600);border:1px solid rgba(239,68,68,.2)}
+.sa-wrap{background:var(--slate-50);border:1px solid var(--slate-200);
+  border-radius:var(--r-sm);padding:8px 11px;margin-bottom:10px}
+.sa-lbl{font-size:.7rem;font-weight:700;color:var(--slate-500);
+  text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.sa-txt{font-size:.8rem;color:var(--slate-600);line-height:1.55;
+  font-style:italic;max-height:56px;overflow:hidden;position:relative;transition:max-height 400ms}
+.sa-txt.exp{max-height:600px}
+.sa-txt:not(.exp)::after{content:'';position:absolute;bottom:0;left:0;right:0;
+  height:22px;background:linear-gradient(transparent,var(--slate-50))}
+.ocr-cf{font-size:.73rem;color:var(--slate-500);margin-top:2px;
+  display:flex;align-items:center;gap:6px}
+.ocr-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.ocr-hi{background:var(--green-500)}
+.ocr-md{background:var(--amber-500)}
+.ocr-lo{background:var(--red-500)}
+
+/* Total banner */
+.banner{background:linear-gradient(135deg,var(--blue-700),var(--blue-500));
+  border-radius:var(--r-lg);padding:22px 24px;margin-top:20px;text-align:center;
+  box-shadow:0 8px 24px rgba(59,130,246,.35);position:relative;overflow:hidden;display:none}
+.banner::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 30% 50%,rgba(255,255,255,.12),transparent 60%);pointer-events:none}
+.banner.vis{display:block;animation:bIn 500ms cubic-bezier(.4,0,.2,1) forwards}
+@keyframes bIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.bn-marks{font-size:2rem;font-weight:800;color:#fff;
+  letter-spacing:-.03em;font-family:var(--mono);text-shadow:0 2px 8px rgba(0,0,0,.2)}
+.bn-lbl{font-size:.8rem;color:rgba(255,255,255,.72);margin-top:2px}
+.bn-mode{margin-top:6px;font-size:.72rem;color:rgba(255,255,255,.55);font-weight:500;
+  background:rgba(255,255,255,.12);display:inline-block;padding:2px 10px;border-radius:99px}
+.bn-success{margin-top:10px;font-size:.8rem;color:rgba(255,255,255,.82);
+  display:flex;align-items:center;justify-content:center;gap:6px;font-weight:500}
+.pulse-dot{width:8px;height:8px;background:#4ade80;border-radius:50%;
+  box-shadow:0 0 8px rgba(74,222,128,.6);animation:pulse 1.5s ease infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.3);opacity:.7}}
+.bn-actions{margin-top:14px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.btn-bn{background:rgba(255,255,255,.18);color:#fff;border:1.5px solid rgba(255,255,255,.32);
+  backdrop-filter:blur(4px);font-size:.8rem;padding:7px 14px;border-radius:var(--r-md);
+  cursor:pointer;font-family:var(--font);font-weight:600;transition:all var(--tr);
+  display:flex;align-items:center;gap:5px}
+.btn-bn:hover{background:rgba(255,255,255,.28);transform:translateY(-1px)}
+
+/* Empty */
+.empty{text-align:center;padding:28px 16px;color:var(--slate-400)}
+.empty-ico{font-size:28px;display:block;margin-bottom:8px;opacity:.45}
+.empty-txt{font-size:.82rem}
+
+/* Alert */
+.alert{padding:11px 16px;border-radius:var(--r-md);font-size:.84rem;
+  font-weight:500;margin-bottom:12px;display:flex;align-items:flex-start;gap:8px}
+.alert-err{background:var(--red-100);color:var(--red-600);border:1px solid rgba(239,68,68,.25)}
+.alert-warn{background:var(--amber-100);color:var(--amber-600);border:1px solid rgba(245,158,11,.25)}
+.hidden{display:none!important}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.rc{animation:fadeUp 320ms ease both}
+.rc:nth-child(1){animation-delay:0ms}
+.rc:nth-child(2){animation-delay:60ms}
+.rc:nth-child(3){animation-delay:120ms}
+.rc:nth-child(4){animation-delay:180ms}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-icon">📝</div>
+    <div class="header-text">
+      <h1>Automated Answer Sheet Evaluation System</h1>
+      <p>Google Vision OCR · Semantic Matching · Keyword Analysis · Multi-Subject Support</p>
+    </div>
+  </header>
+
+  <!-- Global progress -->
+  <div class="gprogress">
+    <span class="gp-label">Pipeline</span>
+    <div class="gp-outer"><div class="gp-inner" id="gBar"></div></div>
+    <span class="gp-pct" id="gPct">0%</span>
+  </div>
+
+  <!-- Alert -->
+  <div id="alertBox" class="hidden"></div>
+
+  <!-- ══ SUBJECT / MEDIUM SELECTOR ══ -->
+  <div class="subject-bar">
+    <div class="subject-bar-title">🎓 Select Subject &amp; Medium</div>
+    <div class="subject-row">
+
+      <!-- Language subjects group -->
+      <div class="subject-group">
+        <label>Language Subjects</label>
+        <div class="subject-pills" id="pillsLanguage">
+          <button class="pill pill-lang pill-selected" data-subject="tamil"   onclick="selectSubject('tamil')">🇮🇳 Tamil</button>
+          <button class="pill pill-lang"               data-subject="english" onclick="selectSubject('english')">🇬🇧 English</button>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div style="width:1px;background:var(--slate-200);align-self:stretch;margin:0 4px"></div>
+
+      <!-- Other subjects group -->
+      <div class="subject-group">
+        <label>Other Subjects</label>
+        <div class="subject-pills" id="pillsOther">
+          <button class="pill" data-subject="science" onclick="selectSubject('science')">🔬 Science</button>
+          <button class="pill" data-subject="social"  onclick="selectSubject('social')">🌍 Social</button>
+          <button class="pill" data-subject="maths"   onclick="selectSubject('maths')">📐 Maths</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Medium selector — shown only for non-language subjects -->
+    <div class="medium-row hidden" id="mediumRow">
+      <span>🌐 Medium of Instruction:</span>
+      <select id="mediumSelect">
+        <option value="tamil">Tamil Medium</option>
+        <option value="english">English Medium</option>
+      </select>
+    </div>
+
+    <!-- Hint text -->
+    <div class="subject-hint" id="subjectHint">
+      <span>ℹ️</span>
+      <span id="subjectHintText">Tamil subject will be evaluated in Tamil. No medium required.</span>
+    </div>
+  </div>
+
+  <!-- ══ MODE TOGGLE ══ -->
+  <div class="mode-toggle">
+    <button class="mode-btn active" id="modeCombined" onclick="switchMode('combined')">
+      📄 Combined Mode
+      <span class="mode-badge">Classic</span>
+    </button>
+    <button class="mode-btn" id="modeSeparate" onclick="switchMode('separate')">
+      📂 Separate Upload
+      <span class="mode-badge">New</span>
+    </button>
+  </div>
+
+  <!-- Top grid -->
+  <div class="top-grid">
+
+    <!-- Upload card -->
+    <div class="card">
+      <div class="card-hd">
+        <div class="card-hd-left">
+          <div class="hd-icon" style="background:var(--blue-100);color:var(--blue-600)">📂</div>
+          <h2 id="uploadCardTitle">Upload Answer Sheet</h2>
+        </div>
+      </div>
+      <div class="card-bd">
+
+        <!-- ── COMBINED mode upload ── -->
+        <div id="uploadCombined">
+          <div class="drop" id="dropZone">
+            <input type="file" id="fileInput" accept=".jpg,.jpeg,.png,.bmp,.webp,.tiff,.tif,.gif,.pdf"/>
+            <span class="drop-icon">☁️</span>
+            <div class="drop-label">Answer sheet with questions &amp; answers</div>
+            <div id="fileBadge" class="hidden"></div>
+          </div>
+          <button class="btn btn-choose" onclick="document.getElementById('fileInput').click()">
+            📎 Choose File
+          </button>
+          <button class="btn btn-eval" id="evalBtnCombined" disabled onclick="startEvaluation('combined', false)">
+            🚀 Upload &amp; Evaluate
+          </button>
+          <button class="btn btn-demo" onclick="startEvaluation('combined', true)">
+            🎭 Try Demo Mode (no API key)
+          </button>
+        </div>
+
+        <!-- ── SEPARATE mode upload ── -->
+        <div id="uploadSeparate" class="hidden">
+          <div class="sep-info">
+            ℹ️ Upload the question paper and answer sheet as separate files.
+            The system will OCR both independently and match them automatically.
+          </div>
+          <div class="sep-uploads">
+            <!-- Question paper slot -->
+            <div class="sep-upload-slot">
+              <div class="sep-slot-label">
+                <span class="slot-icon-qp">📋</span> Question Paper
+              </div>
+              <div class="drop" id="dropZoneQP">
+                <input type="file" id="fileInputQP" accept=".jpg,.jpeg,.png,.bmp,.webp,.tiff,.tif,.gif,.pdf"/>
+                <span class="drop-icon" style="font-size:22px">📋</span>
+                <div class="drop-label" style="font-size:.75rem">Question paper PDF/image</div>
+                <div id="fileBadgeQP" class="hidden"></div>
+              </div>
+              <button class="btn btn-choose" style="font-size:.78rem;padding:7px"
+                      onclick="document.getElementById('fileInputQP').click()">
+                📎 Choose Question Paper
+              </button>
+            </div>
+            <!-- Answer sheet slot -->
+            <div class="sep-upload-slot">
+              <div class="sep-slot-label">
+                <span class="slot-icon-as" style="color:var(--violet-600)">✍️</span> Answer Sheet
+              </div>
+              <div class="drop drop-violet" id="dropZoneAS">
+                <input type="file" id="fileInputAS" accept=".jpg,.jpeg,.png,.bmp,.webp,.tiff,.tif,.gif,.pdf"/>
+                <span class="drop-icon" style="font-size:22px">✍️</span>
+                <div class="drop-label" style="font-size:.75rem">Student answer sheet PDF/image</div>
+                <div id="fileBadgeAS" class="hidden"></div>
+              </div>
+              <button class="btn btn-choose" style="font-size:.78rem;padding:7px;color:var(--violet-600);border-color:rgba(139,92,246,.3)"
+                      onclick="document.getElementById('fileInputAS').click()">
+                📎 Choose Answer Sheet
+              </button>
+            </div>
+          </div>
+          <button class="btn btn-eval" id="evalBtnSeparate" disabled onclick="startEvaluation('separate', false)">
+            🚀 Upload &amp; Evaluate Separately
+          </button>
+          <button class="btn btn-demo" onclick="startEvaluation('separate', true)">
+            🎭 Try Demo Mode (separate)
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Processing Status -->
+    <div class="card">
+      <div class="card-hd">
+        <div class="card-hd-left">
+          <div class="hd-icon" style="background:var(--amber-100);color:var(--amber-600)">⚙️</div>
+          <h2>Processing Status</h2>
+        </div>
+      </div>
+      <div class="card-bd">
+        <!-- Combined steps -->
+        <div id="stepsCombined" class="step-list">
+          <div class="step" id="step1"><div class="step-num" id="sn1">1</div>
+            <div class="step-title">Uploading File…</div>
+            <span class="step-badge b-wait" id="sb1">Waiting</span></div>
+          <div class="step" id="step2"><div class="step-num" id="sn2">2</div>
+            <div class="step-title">Extracting Text (OCR)…</div>
+            <span class="step-badge b-wait" id="sb2">Waiting</span></div>
+          <div class="step" id="step3"><div class="step-num" id="sn3">3</div>
+            <div class="step-title">Preprocessing &amp; Question Matching…</div>
+            <span class="step-badge b-wait" id="sb3">Waiting</span></div>
+          <div class="step" id="step4"><div class="step-num" id="sn4">4</div>
+            <div class="step-title">Evaluating Answers (ML Scoring)…</div>
+            <span class="step-badge b-wait" id="sb4">Waiting</span></div>
+        </div>
+        <!-- Separate steps -->
+        <div id="stepsSeparate" class="step-list hidden">
+          <div class="step" id="sep_step1"><div class="step-num" id="sep_sn1">1</div>
+            <div class="step-title">Uploading Question Paper &amp; Answer Sheet…</div>
+            <span class="step-badge b-wait" id="sep_sb1">Waiting</span></div>
+          <div class="step" id="sep_step2"><div class="step-num" id="sep_sn2">2</div>
+            <div class="step-title">OCR — Question Paper…</div>
+            <span class="step-badge b-wait" id="sep_sb2">Waiting</span></div>
+          <div class="step" id="sep_step3"><div class="step-num" id="sep_sn3">3</div>
+            <div class="step-title">OCR — Answer Sheet…</div>
+            <span class="step-badge b-wait" id="sep_sb3">Waiting</span></div>
+          <div class="step" id="sep_step4"><div class="step-num" id="sep_sn4">4</div>
+            <div class="step-title">Matching &amp; Evaluating Answers…</div>
+            <span class="step-badge b-wait" id="sep_sb4">Waiting</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /top-grid -->
+
+  <!-- Bottom grid -->
+  <div class="bot-grid">
+    <div class="card">
+      <div class="card-hd">
+        <div class="card-hd-left">
+          <div class="hd-icon" style="background:var(--blue-100);color:var(--blue-600)">📄</div>
+          <h2>Extracted Text</h2>
+        </div>
+      </div>
+      <div class="card-bd" id="extractedText">
+        <div class="empty">
+          <span class="empty-ico">🔍</span>
+          <div class="empty-txt">Upload a file to extract text</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-hd" style="justify-content:space-between">
+        <div class="card-hd-left">
+          <div class="hd-icon" style="background:var(--green-100);color:var(--green-700)">📊</div>
+          <h2>Evaluation Results</h2>
+        </div>
+        <button class="btn btn-dl hidden" id="dlBtn" onclick="downloadReport()">
+          ⬇ Download Report
+        </button>
+      </div>
+      <div class="card-bd" id="evalResults">
+        <div class="empty">
+          <span class="empty-ico">📋</span>
+          <div class="empty-txt">Results will appear after evaluation</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Total Marks Banner -->
+  <div class="banner" id="banner">
+    <div class="bn-marks" id="bnMarks">— / —</div>
+    <div class="bn-lbl">Total Marks</div>
+    <div class="bn-mode" id="bnMode"></div>
+    <div class="bn-success"><span class="pulse-dot"></span>Evaluation Completed Successfully!</div>
+    <div class="bn-actions">
+      <button class="btn-bn" onclick="resetApp()">🔄 Evaluate Another Sheet</button>
+      <button class="btn-bn" onclick="downloadReport()">⬇ Download Report</button>
+    </div>
+  </div>
+
+</div><!-- /wrap -->
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   Config
+   ══════════════════════════════════════════════════════════════════════════ */
+const API_BASE          = "http://127.0.0.1:5000";
+const EVAL_COMBINED_URL = `${API_BASE}/evaluate`;
+const EVAL_SEPARATE_URL = `${API_BASE}/evaluate_separate`;
+const DEMO_COMBINED_URL = `${API_BASE}/demo`;
+const DEMO_SEPARATE_URL = `${API_BASE}/demo_separate`;
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Subject / Medium Classification  (mirrors subject_router.py)
+   ══════════════════════════════════════════════════════════════════════════ */
+const LANGUAGE_SUBJECTS = new Set(["tamil", "english"]);
+const MEDIUM_SUBJECTS   = new Set(["science", "social", "maths"]);
+
+const SUBJECT_HINTS = {
+  tamil:   "Tamil subject → evaluated in Tamil. Medium not required.",
+  english: "English subject → evaluated in English. Medium not required.",
+  science: "Science requires a medium — choose Tamil or English instruction.",
+  social:  "Social Studies requires a medium — choose Tamil or English instruction.",
+  maths:   "Mathematics requires a medium — choose Tamil or English instruction.",
+};
+
+/* ══════════════════════════════════════════════════════════════════════════
+   State
+   ══════════════════════════════════════════════════════════════════════════ */
+let _lastResponse  = null;
+let _currentMode   = "combined";   // "combined" | "separate"
+let _currentSubject = "tamil";     // selected subject key
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Subject / Medium selector logic
+   ══════════════════════════════════════════════════════════════════════════ */
+function selectSubject(subject) {
+  _currentSubject = subject;
+
+  // Update pill styles across both groups
+  document.querySelectorAll(".pill").forEach(p => {
+    p.classList.toggle("pill-selected", p.dataset.subject === subject);
+  });
+
+  const isLang = LANGUAGE_SUBJECTS.has(subject);
+  const medRow  = document.getElementById("mediumRow");
+  const hint    = document.getElementById("subjectHint");
+  const hintTxt = document.getElementById("subjectHintText");
+
+  // Show / hide medium selector
+  medRow.classList.toggle("hidden", isLang);
+
+  // Update hint styling
+  hint.className = "subject-hint " + (isLang ? "hint-lang" : "hint-medium");
+  hintTxt.textContent = SUBJECT_HINTS[subject] || "";
+}
+
+function getSelectedMedium() {
+  if (LANGUAGE_SUBJECTS.has(_currentSubject)) return null;  // ignored
+  return document.getElementById("mediumSelect").value;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Mode switching
+   ══════════════════════════════════════════════════════════════════════════ */
+function switchMode(mode) {
+  _currentMode = mode;
+
+  document.getElementById("modeCombined").classList.toggle("active", mode === "combined");
+  document.getElementById("modeSeparate").classList.toggle("active", mode === "separate");
+
+  document.getElementById("uploadCombined").classList.toggle("hidden", mode !== "combined");
+  document.getElementById("uploadSeparate").classList.toggle("hidden", mode !== "separate");
+
+  document.getElementById("stepsCombined").classList.toggle("hidden", mode !== "combined");
+  document.getElementById("stepsSeparate").classList.toggle("hidden", mode !== "separate");
+
+  document.getElementById("uploadCardTitle").textContent =
+    mode === "combined" ? "Upload Answer Sheet" : "Upload Files Separately";
+
+  if (mode === "combined") {
+    [1,2,3,4].forEach(n => setStep("", n, "waiting"));
+  } else {
+    [1,2,3,4].forEach(n => setStep("sep_", n, "waiting"));
+  }
+  setProgress(0);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   File input — Combined
+   ══════════════════════════════════════════════════════════════════════════ */
+const fileInput   = document.getElementById("fileInput");
+const dropZone    = document.getElementById("dropZone");
+const evalBtnComb = document.getElementById("evalBtnCombined");
+const fileBadge   = document.getElementById("fileBadge");
+
+fileInput.addEventListener("change", () => {
+  const f = fileInput.files[0];
+  if (f) { fileBadge.textContent = f.name; fileBadge.className = "file-badge"; evalBtnComb.disabled = false; }
+});
+dropZone.addEventListener("dragover", e => { e.preventDefault(); dropZone.classList.add("drag"); });
+dropZone.addEventListener("dragleave", () => dropZone.classList.remove("drag"));
+dropZone.addEventListener("drop", e => {
+  e.preventDefault(); dropZone.classList.remove("drag");
+  const f = e.dataTransfer.files[0];
+  if (f) { fileInput._droppedFile = f; fileBadge.textContent = f.name; fileBadge.className = "file-badge"; evalBtnComb.disabled = false; }
+});
+
+/* ══════════════════════════════════════════════════════════════════════════
+   File input — Separate: Question Paper
+   ══════════════════════════════════════════════════════════════════════════ */
+const fileInputQP = document.getElementById("fileInputQP");
+const dropZoneQP  = document.getElementById("dropZoneQP");
+const fileBadgeQP = document.getElementById("fileBadgeQP");
+
+fileInputQP.addEventListener("change", () => {
+  const f = fileInputQP.files[0];
+  if (f) { fileBadgeQP.textContent = f.name; fileBadgeQP.className = "file-badge"; checkSeparateReady(); }
+});
+dropZoneQP.addEventListener("dragover", e => { e.preventDefault(); dropZoneQP.classList.add("drag"); });
+dropZoneQP.addEventListener("dragleave", () => dropZoneQP.classList.remove("drag"));
+dropZoneQP.addEventListener("drop", e => {
+  e.preventDefault(); dropZoneQP.classList.remove("drag");
+  const f = e.dataTransfer.files[0];
+  if (f) { fileInputQP._dropped = f; fileBadgeQP.textContent = f.name; fileBadgeQP.className = "file-badge"; checkSeparateReady(); }
+});
+
+/* ══════════════════════════════════════════════════════════════════════════
+   File input — Separate: Answer Sheet
+   ══════════════════════════════════════════════════════════════════════════ */
+const fileInputAS = document.getElementById("fileInputAS");
+const dropZoneAS  = document.getElementById("dropZoneAS");
+const fileBadgeAS = document.getElementById("fileBadgeAS");
+
+fileInputAS.addEventListener("change", () => {
+  const f = fileInputAS.files[0];
+  if (f) { fileBadgeAS.textContent = f.name; fileBadgeAS.className = "file-badge badge-violet"; checkSeparateReady(); }
+});
+dropZoneAS.addEventListener("dragover", e => { e.preventDefault(); dropZoneAS.classList.add("drag"); });
+dropZoneAS.addEventListener("dragleave", () => dropZoneAS.classList.remove("drag"));
+dropZoneAS.addEventListener("drop", e => {
+  e.preventDefault(); dropZoneAS.classList.remove("drag");
+  const f = e.dataTransfer.files[0];
+  if (f) { fileInputAS._dropped = f; fileBadgeAS.textContent = f.name; fileBadgeAS.className = "file-badge badge-violet"; checkSeparateReady(); }
+});
+
+function checkSeparateReady() {
+  const hasQP = fileInputQP.files[0] || fileInputQP._dropped;
+  const hasAS = fileInputAS.files[0] || fileInputAS._dropped;
+  document.getElementById("evalBtnSeparate").disabled = !(hasQP && hasAS);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   UI helpers
+   ══════════════════════════════════════════════════════════════════════════ */
+function setProgress(pct) {
+  document.getElementById("gBar").style.width = pct + "%";
+  document.getElementById("gPct").textContent  = pct + "%";
+}
+
+function setStep(prefix, n, state) {
+  const item  = document.getElementById(prefix + "step" + n);
+  const badge = document.getElementById(prefix + "sb" + n);
+  if (!item) return;
+
+  item.className = "step " + (state === "waiting" ? "" : state);
+  const bMap = { waiting:"b-wait", active:"b-act", done:"b-done", err:"b-err" };
+  const lMap = { waiting:"Waiting", active:"Processing…", done:"Completed", err:"Error" };
+  badge.className   = "step-badge " + bMap[state];
+  badge.textContent = lMap[state];
+
+  const numId = prefix + "sn" + n;
+  let numEl = document.getElementById(numId);
+
+  if (state === "active") {
+    if (numEl) {
+      const sp = document.createElement("div");
+      sp.className = "spinner"; sp.id = "spin_" + prefix + n;
+      numEl.replaceWith(sp);
+    }
+  } else {
+    const spinner = document.getElementById("spin_" + prefix + n);
+    if (spinner) {
+      const nd = document.createElement("div");
+      nd.className = "step-num"; nd.id = numId;
+      nd.textContent = state === "done" ? "✓" : state === "err" ? "✕" : n;
+      spinner.replaceWith(nd);
+    }
+  }
+}
+
+function showAlert(msg, type = "err") {
+  const box = document.getElementById("alertBox");
+  box.className = `alert alert-${type}`;
+  box.innerHTML = `<span>${type === "err" ? "⚠️" : "ℹ️"}</span><span>${msg}</span>`;
+  box.classList.remove("hidden");
+  setTimeout(() => box.classList.add("hidden"), 9000);
+}
+
+const delay = ms => new Promise(r => setTimeout(r, ms));
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Render extracted text
+   ══════════════════════════════════════════════════════════════════════════ */
+function renderExtracted(details) {
+  const container = document.getElementById("extractedText");
+  container.innerHTML = "";
+  if (!details || !details.length) {
+    container.innerHTML = `<div class="empty"><span class="empty-ico">📭</span><div class="empty-txt">No text extracted</div></div>`;
+    return;
+  }
+  details.forEach((d, i) => {
+    const safeQNum = (d.question_number && d.question_number !== "undefined") ? d.question_number : `Q${i+1}`;
+    const id  = "sa-" + safeQNum.replace(/\s/g,"");
+    const ans = d.student_answer || d.answer || "";
+    const long = ans.length > 130;
+    const block = document.createElement("div");
+    block.className = "qa-block";
+    block.innerHTML = `
+      <div class="qa-q">
+        <span class="qa-qlabel">${safeQNum}</span>
+        <div class="qa-qtext">${d.question || "—"}</div>
+      </div>
+      <div class="qa-a-wrap">
+        <div class="qa-alabel">Answer</div>
+        <div class="qa-atext" id="${id}">
+          ${ans || '<em style="color:var(--slate-400)">No answer provided</em>'}
+        </div>
+        ${long ? `<button class="view-btn" onclick="toggleText('${id}',this)">▼ View More</button>` : ""}
+      </div>`;
+    container.appendChild(block);
+  });
+}
+
+function toggleText(id, btn) {
+  const el = document.getElementById(id);
+  el.classList.toggle("exp");
+  btn.textContent = el.classList.contains("exp") ? "▲ View Less" : "▼ View More";
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Render evaluation results
+   ══════════════════════════════════════════════════════════════════════════ */
+function renderResults(details) {
+  const container = document.getElementById("evalResults");
+  container.innerHTML = "";
+  if (!details || !details.length) {
+    container.innerHTML = `<div class="empty"><span class="empty-ico">📭</span><div class="empty-txt">No results</div></div>`;
+    return;
+  }
+  details.forEach((d, i) => {
+    const confPct = Math.round((d.match_confidence || 0) * 100);
+    const evalPct = Math.round((d.score_out_of_10  || 0) * 10);
+    const ocrPct  = Math.round((d.ocr_confidence   || 0) * 100);
+    const confCls = confPct >= 75 ? "cb-hi" : confPct >= 50 ? "cb-md" : "cb-lo";
+    const evalCls = evalPct >= 70 ? "cb-hi" : evalPct >= 50 ? "cb-md" : "cb-lo";
+    const ocrCls  = ocrPct  >= 75 ? "ocr-hi": ocrPct  >= 50 ? "ocr-md": "ocr-lo";
+
+    const stMap = {
+      evaluated: ["st-ev","✓ Evaluated"],
+      skipped:   ["st-sk","⚠ Skipped"],
+      no_answer: ["st-na","— No Answer"],
+      unattempted: ["st-na","— Unattempted"],
+      error:     ["st-er","✕ Error"],
+    };
+    const [stCls, stLabel] = stMap[d.status] || ["st-na", d.status || "Unknown"];
+
+    const mkwHTML = (d.matched_keywords || []).length
+      ? d.matched_keywords.map(k => `<span class="kw-tag kw-m">✔ ${k}</span>`).join("")
+      : '<span style="color:var(--slate-400);font-size:.75rem">None</span>';
+    const mskHTML = (d.missing_keywords || []).length
+      ? d.missing_keywords.map(k => `<span class="kw-tag kw-x">✘ ${k}</span>`).join("")
+      : '<span style="color:var(--slate-400);font-size:.75rem">None</span>';
+
+    const qNum  = d.question_number;
+    const qLabel = (qNum && qNum !== "undefined") ? String(qNum).replace(/^Q/i, "") : String(i+1);
+
+    const displayScore = (d.predicted_marks != null && d.predicted_marks > 0)
+      ? d.predicted_marks
+      : (d.score_out_of_10 != null ? (d.score_out_of_10 / 10) * (d.max_marks || 10) : 0);
+
+    const ansText = d.student_answer || "";
+    const saId    = "sa-r-" + qLabel.replace(/\s/g,"") + i;
+    const saLong  = ansText.length > 100;
+
+    const card = document.createElement("div");
+    card.className = "rc";
+    card.style.animationDelay = (i * 70) + "ms";
+    card.innerHTML = `
+      <div class="rc-hd">
+        <span class="rc-ql">Question ${qLabel}</span>
+        <div class="rc-hr">
+          <span class="score-chip">${displayScore.toFixed(1)} / ${d.max_marks||0}</span>
+          <span class="st-chip ${stCls}">${stLabel}</span>
+        </div>
+      </div>
+      <div class="rc-bd">
+        ${ansText ? `
+        <div class="sa-wrap">
+          <div class="sa-lbl">Student Answer</div>
+          <div class="sa-txt" id="${saId}">${ansText}</div>
+          ${saLong ? `<button class="view-btn" onclick="toggleText('${saId}',this)">▼ View More</button>` : ""}
+        </div>` : ""}
+        <div class="conf-row">
+          <span class="conf-lbl">Match Confidence</span>
+          <div class="cb-out"><div class="cb-in ${confCls}" id="cbar${i}" style="width:0%"></div></div>
+          <span class="conf-val">${confPct}%</span>
+        </div>
+        <div class="conf-row">
+          <span class="conf-lbl">Score (out of 10)</span>
+          <div class="cb-out"><div class="cb-in ${evalCls}" id="sbar${i}" style="width:0%"></div></div>
+          <span class="conf-val">${(d.score_out_of_10||0).toFixed(1)}</span>
+        </div>
+        <div class="ocr-cf">
+          <span class="ocr-dot ${ocrCls}"></span>
+          OCR Confidence: ${ocrPct}%
+        </div>
+        <div class="fb-row" style="margin-top:10px">
+          <strong>Feedback:</strong> ${d.feedback || "—"}
+        </div>
+        <div class="divider"></div>
+        <div class="kw-title">Matched Keywords</div>
+        <div class="kw-list">${mkwHTML}</div>
+        <div class="kw-title">Missing Keywords</div>
+        <div class="kw-list">${mskHTML}</div>
+      </div>`;
+    container.appendChild(card);
+    setTimeout(() => {
+      const cb = document.getElementById("cbar" + i);
+      const sb = document.getElementById("sbar" + i);
+      if (cb) cb.style.width = confPct + "%";
+      if (sb) sb.style.width = evalPct + "%";
+    }, 150 + i * 60);
+  });
+  document.getElementById("dlBtn").classList.remove("hidden");
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Main evaluation entry-point
+   ══════════════════════════════════════════════════════════════════════════ */
+async function startEvaluation(mode, isDemo) {
+  // Reset UI
+  document.getElementById("banner").classList.remove("vis");
+  document.getElementById("alertBox").classList.add("hidden");
+  document.getElementById("dlBtn").classList.add("hidden");
+  document.getElementById("evalResults").innerHTML =
+    '<div class="empty"><span class="empty-ico">📋</span><div class="empty-txt">Results will appear after evaluation</div></div>';
+  document.getElementById("extractedText").innerHTML =
+    '<div class="empty"><span class="empty-ico">🔍</span><div class="empty-txt">Extracting text…</div></div>';
+
+  const prefix = mode === "separate" ? "sep_" : "";
+  [1,2,3,4].forEach(n => setStep(prefix, n, "waiting"));
+  setProgress(0);
+
+  // Read subject + medium
+  const subject = _currentSubject;
+  const medium  = getSelectedMedium();
+
+  // Validate medium for non-language subjects
+  if (!isDemo && MEDIUM_SUBJECTS.has(subject) && !medium) {
+    showAlert(`Please select a medium for ${subject}.`);
+    return;
+  }
+
+  // Validate files
+  if (!isDemo) {
+    if (mode === "combined") {
+      const f = fileInput.files[0] || fileInput._droppedFile;
+      if (!f) { showAlert("Please select an answer sheet file."); return; }
+    } else {
+      const qpf = fileInputQP.files[0] || fileInputQP._dropped;
+      const asf = fileInputAS.files[0] || fileInputAS._dropped;
+      if (!qpf || !asf) { showAlert("Please select both a question paper and an answer sheet."); return; }
+    }
+  }
+
+  // Disable button
+  const evalBtnEl = document.getElementById(mode === "combined" ? "evalBtnCombined" : "evalBtnSeparate");
+  evalBtnEl.disabled = true;
+  evalBtnEl.textContent = "⏳ Processing…";
+
+  // ── Step 1: Upload ──────────────────────────────────────────────────────────
+  setStep(prefix, 1, "active"); setProgress(10);
+  await delay(isDemo ? 600 : 800);
+  setStep(prefix, 1, "done");  setProgress(20);
+
+  // ── Step 2: OCR / API call ──────────────────────────────────────────────────
+  setStep(prefix, 2, "active"); setProgress(35);
+
+  let data;
+  try {
+    if (isDemo) {
+      await delay(1200);
+      const url  = mode === "separate" ? DEMO_SEPARATE_URL : DEMO_COMBINED_URL;
+      const resp = await fetch(url);
+      if (!resp.ok) throw new Error(`Demo endpoint returned ${resp.status}`);
+      data = await resp.json();
+      setStep(prefix, 2, "done"); setProgress(55);
+      setStep(prefix, 3, "active"); setProgress(70);
+      await delay(700);
+      setStep(prefix, 3, "done"); setProgress(80);
+
+    } else if (mode === "combined") {
+      const file = fileInput.files[0] || fileInput._droppedFile;
+      const form = new FormData();
+      form.append("file",       file);
+      form.append("student_id", "student_" + Date.now());
+      form.append("subject",    subject);
+      if (medium) form.append("medium", medium);
+
+      const resp = await fetch(EVAL_COMBINED_URL, { method: "POST", body: form });
+      const body = await resp.json();
+      if (!resp.ok || body.status === "error") throw new Error(body.message || `Server error ${resp.status}`);
+      data = body;
+      setStep(prefix, 2, "done"); setProgress(55);
+      setStep(prefix, 3, "active"); setProgress(70);
+      await delay(400);
+      setStep(prefix, 3, "done"); setProgress(80);
+
+    } else {
+      // Separate mode: two-file upload
+      const qpFile = fileInputQP.files[0] || fileInputQP._dropped;
+      const asFile = fileInputAS.files[0] || fileInputAS._dropped;
+      const form   = new FormData();
+      form.append("question_paper", qpFile);
+      form.append("answer_sheet",   asFile);
+      form.append("student_id",     "student_" + Date.now());
+      form.append("subject",        subject);
+      if (medium) form.append("medium", medium);
+
+      const resp = await fetch(EVAL_SEPARATE_URL, { method: "POST", body: form });
+      setStep(prefix, 2, "done"); setProgress(50);
+      setStep(prefix, 3, "active"); setProgress(65);
+
+      const body = await resp.json();
+      if (!resp.ok || body.status === "error") throw new Error(body.message || `Server error ${resp.status}`);
+      data = body;
+      setStep(prefix, 3, "done"); setProgress(80);
+    }
+  } catch (err) {
+    [2,3,4].forEach(n => setStep(prefix, n, "err"));
+    setProgress(0);
+    showAlert(`Evaluation failed: ${err.message}`);
+    evalBtnEl.disabled   = false;
+    evalBtnEl.textContent = mode === "combined" ? "🚀 Upload & Evaluate" : "🚀 Upload & Evaluate Separately";
+    return;
+  }
+
+  // ── Step 4: Done ────────────────────────────────────────────────────────────
+  setStep(prefix, 4, "active"); setProgress(92);
+  await delay(isDemo ? 500 : 300);
+  setStep(prefix, 4, "done");   setProgress(100);
+
+  // ── Render ──────────────────────────────────────────────────────────────────
+  _lastResponse = data;
+  renderExtracted(data.details || []);
+  renderResults(data.details   || []);
+
+  const s   = data.summary || {};
+  const tot = (s.total_marks     || 0).toFixed(1);
+  const max = (s.max_total_marks || 0).toFixed(1);
+  const pct = (s.percentage      || 0).toFixed(1);
+  document.getElementById("bnMarks").textContent = `${tot} / ${max}  (${pct}%)`;
+
+  // Build mode label including subject context
+  const ctx = data.subject_context || {};
+  const subjectLabel = ctx.subject
+    ? `${ctx.subject.charAt(0).toUpperCase() + ctx.subject.slice(1)}${ctx.medium ? ` (${ctx.medium} medium)` : ""}`
+    : subject.charAt(0).toUpperCase() + subject.slice(1);
+  document.getElementById("bnMode").textContent =
+    `${subjectLabel} · ${mode === "separate" ? "Separate Upload Mode" : "Combined Mode"}`;
+  document.getElementById("banner").classList.add("vis");
+
+  evalBtnEl.textContent = "✓ Done";
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Download report
+   ══════════════════════════════════════════════════════════════════════════ */
+function downloadReport() {
+  if (!_lastResponse) return;
+  const s   = _lastResponse.summary || {};
+  const ctx = _lastResponse.subject_context || {};
+  const subjectLabel = ctx.subject
+    ? `${ctx.subject.toUpperCase()}${ctx.medium ? ` (${ctx.medium} medium)` : ""}`
+    : _currentSubject.toUpperCase();
+  const modeLabel = _currentMode === "separate" ? "SEPARATE UPLOAD MODE" : "COMBINED MODE";
+
+  const lines = [
+    "AUTOMATED ANSWER SHEET EVALUATION REPORT",
+    "=========================================",
+    `Generated  : ${new Date().toLocaleString()}`,
+    `Student ID : ${_lastResponse.student_id || "—"}`,
+    `Subject    : ${subjectLabel}`,
+    `Mode       : ${modeLabel}`,
+    "",
+    `Total Marks: ${(s.total_marks||0).toFixed(1)} / ${(s.max_total_marks||0).toFixed(1)}  (${(s.percentage||0).toFixed(1)}%)`,
+    "",
+    "QUESTION-WISE DETAILS",
+    "─────────────────────",
+  ];
+
+  (_lastResponse.details || []).forEach(d => {
+    lines.push("");
+    lines.push(`${d.question_number}: ${d.question || "—"}`);
+    lines.push(`  Score      : ${(d.predicted_marks||0).toFixed(1)} / ${d.max_marks||0}`);
+    lines.push(`  Status     : ${d.status || "—"}`);
+    lines.push(`  Confidence : ${Math.round((d.match_confidence||0)*100)}%`);
+    lines.push(`  Feedback   : ${d.feedback || "—"}`);
+    lines.push(`  Matched KW : ${(d.matched_keywords||[]).join(", ") || "None"}`);
+    lines.push(`  Missing KW : ${(d.missing_keywords||[]).join(", ") || "None"}`);
+    if (d.student_answer) lines.push(`  Answer     : ${d.student_answer.substring(0,120)}…`);
+  });
+
+  const blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
+  const a    = document.createElement("a");
+  a.href     = URL.createObjectURL(blob);
+  a.download = `eval_report_${_currentSubject}_${_currentMode}_${Date.now()}.txt`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Reset
+   ══════════════════════════════════════════════════════════════════════════ */
+function resetApp() { location.reload(); }
+</script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+{
+  "status": "success",
+  "student_id": "student_1775154682587",
+  "timestamp": "2026-04-02T18:32:30.784506Z",
+  "summary": {
+    "total_marks": 5.0,
+    "max_total_marks": 5.0,
+    "percentage": 100.0
+  },
+  "details": [
+    {
+      "question": "Explain, main themes in shakespeare's hamlab",
+      "student_answer": "Hamlet explores themes of revenge, mortality, corruption and the complexity of action Versus inaction · The protagonist's famous soliloquies reveals his internal conflicts. Themes of betrayal within the & royal family, the corruption of Danish Court, and Hamlet's philosophical questioning of life and death from the backbone of the play.",
+      "max_marks": 5,
+      "status": "evaluated",
+      "feedback": "Missing key concepts: Denmark.",
+      "feedback_list": [
+        "Missing key concepts: Denmark."
+      ],
+      "matched_keywords": [
+        "revenge",
+        "mortality",
+        "corruption",
+        "soliloquy",
+        "inaction",
+        "betrayal",
+        "philosophical",
+        "royal",
+        "conflict"
+      ],
+      "missing_keywords": [
+        "Denmark"
+      ],
+      "covered_concepts": [
+        "revenge",
+        "mortality",
+        "corruption",
+        "indecision"
+      ],
+      "missed_concepts": [],
+      "confidence": 0.9851,
+      "match_confidence": 0.9851,
+      "ocr_confidence": 0.0,
+      "is_irrelevant": false,
+      "is_partially_relevant": false,
+      "semantic_score": 9.85,
+      "keyword_score": 9.3,
+      "concept_score": 10.0,
+      "contradiction_score": 0.0076,
+      "raw_score": 9.7129,
+      "length_factor": 1.0,
+      "length_adjustment": 1.0,
+      "score_out_of_10": 9.71,
+      "final_score": 4.855,
+      "rounded_score": 5.0,
+      "question_number": "1",
+      "predicted_marks": 5.0
+    }
+  ],
+  "subject_context": {
+    "subject": "english",
+    "medium": null,
+    "is_language_sub": true,
+    "dataset_path": "data/english_english.json",
+    "language_hints": [
+      "en"
+    ],
+    "eval_language": "english"
+  }
+}

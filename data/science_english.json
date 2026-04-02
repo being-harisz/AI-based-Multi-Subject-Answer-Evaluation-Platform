@@ -1,0 +1,81 @@
+[
+{
+"question": "Define photosynthesis.",
+"model_answer": "Photosynthesis is the process by which green plants use sunlight, carbon dioxide, and water to produce glucose and oxygen.",
+"keywords": [
+{"word": "photosynthesis", "weight": 2},
+{"word": "sunlight", "weight": 2},
+{"word": "carbon dioxide", "weight": 2},
+{"word": "glucose", "weight": 2},
+{"word": "oxygen", "weight": 2}
+],
+"concepts": [
+["photosynthesis"],
+["sunlight"],
+["carbon dioxide"],
+["glucose"],
+["oxygen"]
+],
+"max_marks": 5
+},
+{
+"question": "State Newton’s Second Law of Motion.",
+"model_answer": "Newton’s Second Law states that force is equal to mass times acceleration.",
+"keywords": [
+{"word": "force", "weight": 2},
+{"word": "mass", "weight": 2},
+{"word": "acceleration", "weight": 2}
+],
+"concepts": [
+["force"],
+["mass"],
+["acceleration"],
+["F=ma"]
+],
+"max_marks": 5
+},
+{
+"question": "What is the function of the heart?",
+"model_answer": "The heart pumps blood throughout the body, supplying oxygen and nutrients and removing waste products.",
+"keywords": [
+{"word": "heart", "weight": 2},
+{"word": "blood", "weight": 2},
+{"word": "oxygen", "weight": 1},
+{"word": "nutrients", "weight": 1}
+],
+"concepts": [
+["pumping blood"],
+["oxygen transport"],
+["nutrients"],
+["circulation"]
+],
+"max_marks": 5
+},
+{
+"question": "What is evaporation?",
+"model_answer": "Evaporation is the process by which a liquid changes into vapor at temperatures below its boiling point.",
+"keywords": [
+{"word": "evaporation", "weight": 2},
+{"word": "liquid", "weight": 2},
+{"word": "vapor", "weight": 2}
+],
+"concepts": [
+["liquid to vapor"],
+["temperature"],
+["boiling point"]
+],
+"max_marks": 5
+},
+{
+"question": "Define energy.",
+"model_answer": "Energy is the ability to do work.",
+"keywords": [
+{"word": "energy", "weight": 2},
+{"word": "work", "weight": 2}
+],
+"concepts": [
+["ability to do work"]
+],
+"max_marks": 2
+}
+]

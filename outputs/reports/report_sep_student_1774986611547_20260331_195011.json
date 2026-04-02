@@ -1,0 +1,50 @@
+{
+  "status": "success",
+  "student_id": "student_1774986611547",
+  "timestamp": "2026-03-31T19:50:17.591819Z",
+  "summary": {
+    "total_marks": 3.55,
+    "max_total_marks": 10.0,
+    "percentage": 35.5
+  },
+  "details": [
+    {
+      "qno": "1",
+      "question": "திருக்குறள் பற்றி முழுமையான விளக்கம் தருக.",
+      "student_answer": "திருக்குறள் திருவள்ளுவரால் இயற்றப்பட்டது. இந்நான் 1330 குறள்கள் 133 அதிகாரங்களாக பிரிக்கப்பட்டுள்ளது. இது இதில் அறம், பொருள்,இன்பம் என்று 3 பிரிவுகள் உள்ளன. இது தமிழில் மிகவும் புகழ்பெற்ற நூல். இது மனித வாழ்வுக்கு தேவையான அனைத்து அம்சங்களையும் உள்ளடக்கிய நூலாக கருதப்படுகிறது.",
+      "marks": 3.55,
+      "max_marks": 5,
+      "status": "evaluated",
+      "feedback": "Several key concepts are missing from your answer: சங்கம், சிலப்பதிகாரம், இலக்கியம். Please revise and include these essential ideas.",
+      "matched_keywords": [
+        "தமிழ்",
+        "திருக்குறள்"
+      ],
+      "missing_keywords": [
+        "சங்கம்",
+        "சிலப்பதிகாரம்",
+        "இலக்கியம்"
+      ],
+      "confidence": 0.8157,
+      "is_irrelevant": false,
+      "is_partially_relevant": false,
+      "semantic_score": 8.16,
+      "keyword_score": 6.98,
+      "score_out_of_10": 7.1
+    },
+    {
+      "qno": "2",
+      "question": "தமிழ் சங்க இலக்கியம் பற்றி விவரி.",
+      "student_answer": "",
+      "marks": 0,
+      "max_marks": 5,
+      "status": "unattempted",
+      "feedback": "Not attempted.",
+      "matched_keywords": [],
+      "missing_keywords": [],
+      "confidence": 0.0,
+      "is_irrelevant": false,
+      "is_partially_relevant": false
+    }
+  ]
+}

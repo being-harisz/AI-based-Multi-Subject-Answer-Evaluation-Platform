@@ -1,0 +1,78 @@
+[
+  {
+    "question": "Explain the main themes in Shakespeare's Hamlet.",
+    "model_answer": "Hamlet explores themes of revenge, mortality, corruption, and the complexity of action versus inaction. The protagonist's famous soliloquies reveal his internal conflict. Themes of betrayal within the royal family, the corruption of the Danish court, and Hamlet's philosophical questioning of life and death form the backbone of the play.",
+    "keywords": [
+      "revenge", "mortality", "corruption", "soliloquy", "inaction",
+      "betrayal", "Denmark", "philosophical", "royal", "conflict"
+    ],
+    "concepts": [
+      ["revenge", "vengeance", "retribution"],
+      ["mortality", "death", "to be or not to be"],
+      ["corruption", "betrayal", "treachery"],
+      ["indecision", "inaction", "hesitation"]
+    ],
+    "max_marks": 5
+  },
+  {
+    "question": "What is photosynthesis? Explain the process briefly.",
+    "model_answer": "Photosynthesis is the process by which green plants use sunlight, water, and carbon dioxide to produce glucose and oxygen. It occurs in the chloroplasts, specifically using chlorophyll to absorb light energy. The light-dependent reactions produce ATP and NADPH, while the Calvin cycle fixes CO2 into organic molecules.",
+    "keywords": [
+      "sunlight", "water", "carbon dioxide", "glucose", "oxygen",
+      "chloroplast", "chlorophyll", "ATP", "Calvin cycle", "light energy"
+    ],
+    "concepts": [
+      ["sunlight", "light energy", "solar energy"],
+      ["chloroplast", "chlorophyll", "pigment"],
+      ["glucose", "organic molecules", "sugar"],
+      ["oxygen", "O2", "gas release"]
+    ],
+    "max_marks": 5
+  },
+  {
+    "question": "Describe the causes and effects of the First World War.",
+    "model_answer": "The First World War (1914–1918) was caused by a combination of militarism, alliance systems, imperialism, and nationalism (MAIN). The immediate trigger was the assassination of Archduke Franz Ferdinand. Effects included massive casualties, the collapse of empires (Austro-Hungarian, Ottoman, Russian, German), the Treaty of Versailles, and the seeds of World War II.",
+    "keywords": [
+      "militarism", "alliances", "imperialism", "nationalism",
+      "assassination", "Franz Ferdinand", "Treaty of Versailles",
+      "casualties", "empires", "1914"
+    ],
+    "concepts": [
+      ["militarism", "arms race", "military buildup"],
+      ["alliances", "Triple Entente", "Triple Alliance"],
+      ["nationalism", "self-determination", "sovereignty"],
+      ["Treaty of Versailles", "peace treaty", "reparations"]
+    ],
+    "max_marks": 7
+  },
+  {
+    "question": "What is Newton's Second Law of Motion? Give an example.",
+    "model_answer": "Newton's Second Law of Motion states that the force acting on an object is equal to the mass of the object multiplied by its acceleration (F = ma). For example, a car of mass 1000 kg accelerating at 2 m/s² experiences a force of 2000 N. This law explains why heavier objects require more force to accelerate at the same rate.",
+    "keywords": [
+      "force", "mass", "acceleration", "F=ma", "Newton",
+      "second law", "motion", "proportional", "kilogram", "newton"
+    ],
+    "concepts": [
+      ["force", "F", "net force"],
+      ["mass", "kg", "kilogram"],
+      ["acceleration", "m/s²", "rate of change"],
+      ["F=ma", "equation", "formula"]
+    ],
+    "max_marks": 5
+  },
+  {
+    "question": "Write a short note on the importance of reading.",
+    "model_answer": "Reading is a fundamental skill that enhances vocabulary, improves comprehension, and stimulates critical thinking. It exposes readers to diverse perspectives and cultures. Regular reading has been linked to improved concentration, reduced stress, and better academic performance. Books and other reading materials are a primary source of knowledge and lifelong learning.",
+    "keywords": [
+      "vocabulary", "comprehension", "critical thinking", "knowledge",
+      "concentration", "perspective", "academic", "learning", "skill", "stress"
+    ],
+    "concepts": [
+      ["vocabulary", "language", "words"],
+      ["critical thinking", "analysis", "reasoning"],
+      ["knowledge", "learning", "education"],
+      ["concentration", "focus", "mental health"]
+    ],
+    "max_marks": 5
+  }
+]

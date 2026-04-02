@@ -1,0 +1,68 @@
+{
+  "status": "success",
+  "student_id": "student_1775121673244",
+  "timestamp": "2026-04-02T09:28:42.958225Z",
+  "summary": {
+    "total_marks": 4.5,
+    "max_total_marks": 10.0,
+    "percentage": 45.0
+  },
+  "details": [
+    {
+      "question": "திருக்குறள் பற்றி முழுமையான விளக்கம் தருக.",
+      "student_answer": "திருக்குறள் திருவள்ளுவரால் இயற்றப்பட்டது. இந்நான் 1330 குறள்கள் 133 அதிகாரங்களாக பிரிக்கப்பட்டுள்ளது. இது இதில் அறம், பொருள்,இன்பம் என்று 3 பிரிவுகள் உள்ளன. இது தமிழில் மிகவும் புகழ்பெற்ற நூல். இது மனித வாழ்வுக்கு தேவையான அனைத்து அம்சங்களையும் உள்ளடக்கிய நூலாக கருதப்படுகிறது.",
+      "max_marks": 5,
+      "status": "evaluated",
+      "feedback": "Good answer — covers the key concepts well.",
+      "feedback_list": [
+        "Good answer — covers the key concepts well."
+      ],
+      "matched_keywords": [
+        "திருவள்ளுவர்",
+        "1330",
+        "அறம்",
+        "பொருள்",
+        "இன்பம்"
+      ],
+      "missing_keywords": [],
+      "covered_concepts": [
+        "திருவள்ளுவர்",
+        "1330",
+        "அறம்",
+        "தமிழ் நூல்"
+      ],
+      "missed_concepts": [],
+      "confidence": 0.9248,
+      "match_confidence": 0.9248,
+      "ocr_confidence": 0.0,
+      "is_irrelevant": false,
+      "is_partially_relevant": false,
+      "semantic_score": 9.25,
+      "keyword_score": 9.81,
+      "concept_score": 10.0,
+      "contradiction_score": 0.0691,
+      "raw_score": 9.2467,
+      "length_factor": 1.0,
+      "length_adjustment": 1.0,
+      "score_out_of_10": 9.25,
+      "final_score": 4.625,
+      "rounded_score": 4.5,
+      "question_number": "1",
+      "predicted_marks": 4.5
+    },
+    {
+      "question": "தமிழ் சங்க இலக்கியம் பற்றி விவரி.",
+      "student_answer": "",
+      "max_marks": 5,
+      "status": "unattempted",
+      "feedback": "Not attempted.",
+      "matched_keywords": [],
+      "missing_keywords": [],
+      "confidence": 0.0,
+      "is_irrelevant": false,
+      "is_partially_relevant": false,
+      "question_number": "2",
+      "predicted_marks": 0
+    }
+  ]
+}

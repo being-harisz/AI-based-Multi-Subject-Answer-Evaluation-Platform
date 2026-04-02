@@ -1,0 +1,63 @@
+{
+  "status": "success",
+  "student_id": "student_1775156822826",
+  "timestamp": "2026-04-02T19:07:12.853230Z",
+  "summary": {
+    "total_marks": 3.5,
+    "max_total_marks": 5.0,
+    "percentage": 70.0
+  },
+  "details": [
+    {
+      "question": "ஆவியாக்கம் என்றால் என்ன?",
+      "student_answer": "ஆவியாக்கம் என்பது திரவம் ஆவியாக மாறும் செயல்முறை ஆகும்.",
+      "max_marks": 5,
+      "status": "evaluated",
+      "feedback": "Answer is too short for the marks allocated — please elaborate with more detail.; Missed concept(s): வெப்பநிலை, கொதிநிலை.",
+      "feedback_list": [
+        "Answer is too short for the marks allocated — please elaborate with more detail.",
+        "Missed concept(s): வெப்பநிலை, கொதிநிலை."
+      ],
+      "matched_keywords": [
+        "ஆவியாக்கம்",
+        "திரவம்",
+        "ஆவி"
+      ],
+      "missing_keywords": [],
+      "covered_concepts": [
+        "திரவம் → ஆவி"
+      ],
+      "missed_concepts": [
+        "வெப்பநிலை",
+        "கொதிநிலை"
+      ],
+      "confidence": 1.0,
+      "match_confidence": 1.0,
+      "ocr_confidence": 0.0,
+      "is_irrelevant": false,
+      "is_partially_relevant": false,
+      "semantic_score": 10.0,
+      "keyword_score": 10.0,
+      "concept_score": 3.33,
+      "contradiction_score": 0.048,
+      "raw_score": 8.1327,
+      "length_factor": 0.2667,
+      "length_adjustment": 0.89,
+      "score_out_of_10": 7.24,
+      "final_score": 3.62,
+      "rounded_score": 3.5,
+      "question_number": "1",
+      "predicted_marks": 3.5
+    }
+  ],
+  "subject_context": {
+    "subject": "science",
+    "medium": "tamil",
+    "is_language_sub": false,
+    "dataset_path": "data/science_tamil.json",
+    "language_hints": [
+      "ta"
+    ],
+    "eval_language": "tamil"
+  }
+}

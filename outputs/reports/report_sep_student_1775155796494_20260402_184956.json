@@ -1,0 +1,50 @@
+{
+  "status": "success",
+  "student_id": "student_1775155796494",
+  "timestamp": "2026-04-02T18:50:11.649884Z",
+  "summary": {
+    "total_marks": 0.0,
+    "max_total_marks": 10.0,
+    "percentage": 0.0
+  },
+  "details": [
+    {
+      "question": "ஆவியாக்கம் என்றால்",
+      "student_answer": "",
+      "max_marks": 10,
+      "status": "unattempted",
+      "feedback": "Not attempted.",
+      "matched_keywords": [],
+      "missing_keywords": [],
+      "confidence": 0.0,
+      "is_irrelevant": false,
+      "is_partially_relevant": false,
+      "question_number": "1",
+      "predicted_marks": 0
+    },
+    {
+      "question": "stost.",
+      "student_answer": "ஆவியாக்கம் என்பது திரவம் ஆவியாக மாறும் செயல்முறை ஆகும்.",
+      "max_marks": 10,
+      "status": "unevaluable",
+      "feedback": "No model answer available for this question.",
+      "matched_keywords": [],
+      "missing_keywords": [],
+      "confidence": 0.0,
+      "is_irrelevant": false,
+      "is_partially_relevant": false,
+      "question_number": "4",
+      "predicted_marks": 0
+    }
+  ],
+  "subject_context": {
+    "subject": "science",
+    "medium": "tamil",
+    "is_language_sub": false,
+    "dataset_path": "data/science_tamil.json",
+    "language_hints": [
+      "ta"
+    ],
+    "eval_language": "tamil"
+  }
+}

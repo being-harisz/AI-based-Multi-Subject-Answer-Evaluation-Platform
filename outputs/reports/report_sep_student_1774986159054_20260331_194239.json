@@ -1,0 +1,60 @@
+{
+  "status": "success",
+  "student_id": "student_1774986159054",
+  "timestamp": "2026-03-31T19:43:25.832506Z",
+  "summary": {
+    "total_marks": 3.01,
+    "max_total_marks": 10.0,
+    "percentage": 30.1
+  },
+  "details": [
+    {
+      "qno": "1",
+      "question": "திருக்குறள் பற்றி முழுமையான விளக்கம் தருக.",
+      "student_answer": "அறம், பொருள், இன்பம் என பிரிக்கப்படுகிறது.",
+      "marks": 1.0,
+      "max_marks": 5,
+      "status": "evaluated",
+      "feedback": "Answer is partially relevant but lacks alignment with the question. Please revise your answer to address the question more directly.",
+      "matched_keywords": [],
+      "missing_keywords": [
+        "தமிழ்",
+        "சங்கம்",
+        "திருக்குறள்",
+        "சிலப்பதிகாரம்",
+        "இலக்கியம்"
+      ],
+      "confidence": 0.3498,
+      "is_irrelevant": false,
+      "is_partially_relevant": true,
+      "semantic_score": 3.5,
+      "keyword_score": 4.67,
+      "score_out_of_10": 2.0
+    },
+    {
+      "qno": "2",
+      "question": "தமிழ் சங்க இலக்கியம் பற்றி விவரி.",
+      "student_answer": "முதல்சங்கம், இடைசங்கம், கடைசங்கம்",
+      "marks": 2.01,
+      "max_marks": 5,
+      "status": "evaluated",
+      "feedback": "Answer is too short — please elaborate with more detail; Answer lacks conceptual clarity — review the topic and rephrase; Several key concepts are missing from your answer: தொல்காப்பியம், அகம், புறம், புலவர்கள், இலக்கியம். Please revise and include these essential ideas.",
+      "matched_keywords": [
+        "சங்கம்"
+      ],
+      "missing_keywords": [
+        "தொல்காப்பியம்",
+        "அகம்",
+        "புறம்",
+        "புலவர்கள்",
+        "இலக்கியம்"
+      ],
+      "confidence": 0.5809,
+      "is_irrelevant": false,
+      "is_partially_relevant": false,
+      "semantic_score": 5.81,
+      "keyword_score": 4.96,
+      "score_out_of_10": 4.02
+    }
+  ]
+}

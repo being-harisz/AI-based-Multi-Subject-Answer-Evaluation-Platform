@@ -1,0 +1,102 @@
+{
+  "status": "success",
+  "student_id": "student_1775122380219",
+  "timestamp": "2026-04-02T09:33:08.522359Z",
+  "summary": {
+    "total_marks": 1.5,
+    "max_total_marks": 10.0,
+    "percentage": 15.0
+  },
+  "details": [
+    {
+      "question": "திருக்குறள் பற்றி முழுமையான விளக்கம் தருக.",
+      "student_answer": "அறம், பொருள், இன்பம் என பிரிக்கப்படுகிறது.",
+      "max_marks": 5,
+      "status": "evaluated",
+      "feedback": "Answer is too short for the marks allocated — please elaborate with more detail.; Answer lacks conceptual clarity — review the topic and rephrase.; Evaluation confidence is low; answer may be unclear or ambiguous.; Missed concept(s): திருவள்ளுவர், 1330, தமிழ் நூல்.; Missing key concepts: திருவள்ளுவர், 1330.",
+      "feedback_list": [
+        "Answer is too short for the marks allocated — please elaborate with more detail.",
+        "Answer lacks conceptual clarity — review the topic and rephrase.",
+        "Evaluation confidence is low; answer may be unclear or ambiguous.",
+        "Missed concept(s): திருவள்ளுவர், 1330, தமிழ் நூல்.",
+        "Missing key concepts: திருவள்ளுவர், 1330."
+      ],
+      "matched_keywords": [
+        "அறம்",
+        "பொருள்",
+        "இன்பம்"
+      ],
+      "missing_keywords": [
+        "திருவள்ளுவர்",
+        "1330"
+      ],
+      "covered_concepts": [
+        "அறம்"
+      ],
+      "missed_concepts": [
+        "திருவள்ளுவர்",
+        "1330",
+        "தமிழ் நூல்"
+      ],
+      "confidence": 0.3859,
+      "match_confidence": 0.3859,
+      "ocr_confidence": 0.0,
+      "is_irrelevant": false,
+      "is_partially_relevant": false,
+      "semantic_score": 3.86,
+      "keyword_score": 6.05,
+      "concept_score": 2.5,
+      "contradiction_score": 0.1282,
+      "raw_score": 3.8068,
+      "length_factor": 0.1905,
+      "length_adjustment": 0.8786,
+      "score_out_of_10": 3.34,
+      "final_score": 1.67,
+      "rounded_score": 1.5,
+      "question_number": "1",
+      "predicted_marks": 1.5
+    },
+    {
+      "question": "தமிழ் சங்க இலக்கியம் பற்றி விவரி.",
+      "student_answer": "முதல்சங்கம், இடைசங்கம், கடைசங்கம்",
+      "max_marks": 5,
+      "status": "evaluated",
+      "feedback": "Answer is not relevant to the question.",
+      "feedback_list": [
+        "Answer is not relevant to the question."
+      ],
+      "matched_keywords": [],
+      "missing_keywords": [
+        "சங்கம்",
+        "தொல்காப்பியம்",
+        "அகம்",
+        "புறம்",
+        "புலவர்கள்"
+      ],
+      "covered_concepts": [],
+      "missed_concepts": [
+        "முதல் சங்கம்",
+        "அகம்",
+        "தொல்காப்பியம்",
+        "புலவர்கள்"
+      ],
+      "confidence": 0.1414,
+      "match_confidence": 0.1414,
+      "ocr_confidence": 0.0,
+      "is_irrelevant": true,
+      "is_partially_relevant": false,
+      "semantic_score": 1.41,
+      "keyword_score": 0.0,
+      "concept_score": 0.0,
+      "contradiction_score": 0.0,
+      "raw_score": 0.0,
+      "length_factor": 0.0,
+      "length_adjustment": 0.0,
+      "score_out_of_10": 0.0,
+      "final_score": 0.0,
+      "rounded_score": 0.0,
+      "question_number": "2",
+      "predicted_marks": 0.0
+    }
+  ]
+}
